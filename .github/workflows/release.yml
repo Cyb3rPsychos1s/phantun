@@ -11,7 +11,7 @@ env:
 jobs:
   build-cross:
     runs-on: ubuntu-latest
-    if: false  # <--- 添加这一行，GitHub 将会跳过整个任务
+    if: false # <--- 添加这一行，GitHub 将会跳过整个任务
     env:
       RUST_BACKTRACE: full
     strategy:
@@ -58,7 +58,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RUST_BACKTRACE: full
-      RUSTFLAGS: "-C target-feature=+crt-static" # 强制静态链接 C 库
     strategy:
       matrix:
         target:
@@ -68,14 +67,15 @@ jobs:
       - uses: actions/checkout@v5
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: stable
+          toolchain: nightly
           override: true
-      - name: Install cross
-        uses: taiki-e/install-action@v2
+          components: rust-src
+      - name: Build Static MIPS with rust-musl-cross
+        uses: messense/rust-musl-cross@v1
         with:
-          tool: cross
-      - name: Build with cross
-        run: cross build --release --target ${{ matrix.target }}
+          target: ${{ matrix.target }}
+          args: --release
+          
       - name: Rename artifacts and compress
         run: |
           cd target/${{ matrix.target }}/release
