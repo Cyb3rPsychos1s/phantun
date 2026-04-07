@@ -3,6 +3,7 @@ on:
   push:
     tags:
       - v*.*.*
+  workflow_dispatch: # <--- 添加这一行
 
 env:
   CARGO_TERM_COLOR: always
