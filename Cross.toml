@@ -1,2 +1,0 @@
-[target.mipsel-unknown-linux-musl]
-image = "messense/rust-musl-cross:mipsel-musl"
