@@ -1,2 +1,2 @@
 [target.mipsel-unknown-linux-musl]
-rustflags = ["-C", "target-feature=+crt-static", "-C", "link-arg=-static"]
+rustflags = ["-C", "target-feature=+crt-static"]
