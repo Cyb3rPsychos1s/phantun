@@ -1,0 +1,14 @@
+# docker/Dockerfile.mipsel
+FROM ghcr.io/cross-rs/mipsel-unknown-linux-musl:edge
+
+# 补装静态库
+RUN apt-get update && apt-get install -y \
+    musl-tools \
+    && rm -rf /var/lib/apt/lists/*
+
+# 如果 apt 里没有 mipsel musl 静态库，从源码编译 musl 并安装
+RUN apt-get update && apt-get install -y wget make gcc && \
+    wget https://musl.libc.org/releases/musl-1.2.5.tar.gz && \
+    tar xf musl-1.2.5.tar.gz && cd musl-1.2.5 && \
+    ./configure --target=mipsel-linux-musl --prefix=/usr/mipsel-linux-muslsf && \
+    make && make install

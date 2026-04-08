@@ -29,8 +29,6 @@ jobs:
         uses: taiki-e/install-action@v2
         with:
           tool: cross
-      - name: Debug toolchain
-        run: cross run --target ${{ matrix.target }} -- sh -c "ldd --version; ls /usr/lib/mipsel*"
       - name: Build with cross
         run: cross build --release --target ${{ matrix.target }} -Z build-std=std,panic_abort
       - name: Rename artifacts and compress

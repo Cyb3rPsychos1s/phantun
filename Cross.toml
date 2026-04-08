@@ -1,0 +1,3 @@
+# Cross.toml
+[target.mipsel-unknown-linux-musl]
+dockerfile = "./docker/Dockerfile.mipsel"
