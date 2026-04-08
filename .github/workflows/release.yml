@@ -30,7 +30,7 @@ jobs:
         with:
           tool: cross
       - name: Build with cross
-        run: cross build --release --target ${{ matrix.target }} -Z build-std=std
+        run: cross build --release --target ${{ matrix.target }} -Z build-std=std,panic_abort
       - name: Rename artifacts and compress
         run: |
           cd target/${{ matrix.target }}/release
