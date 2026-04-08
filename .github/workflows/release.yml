@@ -29,7 +29,7 @@ jobs:
         with:
           use-cross: true
           command: build
-          args: --release --target ${{ matrix.target }} -Z build-std
+          args: --release --target ${{ matrix.target }} -Z build-std,panic_abort
         env: 
           RUSTFLAGS: "-C panic=abort"
       - name: Rename artifacts and compress
