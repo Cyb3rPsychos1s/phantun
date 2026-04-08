@@ -14,3 +14,8 @@ log = "0"
 panic = "abort"
 opt-level = "z"
 strip = true
+
+[unstable]
+build-std = ["std", "panic_abort", "compiler_builtins"]
+build-std-features = ["compiler-builtins-mem"]
+
