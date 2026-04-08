@@ -25,11 +25,12 @@ jobs:
           toolchain: nightly
           override: true
           components: rust-src
-      - uses: actions-rs/cargo@v1
+      - name: Install cross
+        uses: taiki-e/install-action@v2
         with:
-          use-cross: true
-          command: build
-          args: --release --target ${{ matrix.target }} -Z build-std
+          tool: cross
+      - name: Build with cross
+        run: cross build --release --target ${{ matrix.target }} -Z build-std=std
       - name: Rename artifacts and compress
         run: |
           cd target/${{ matrix.target }}/release
