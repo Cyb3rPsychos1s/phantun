@@ -16,13 +16,13 @@ jobs:
     strategy:
       matrix:
         target:
-          - mipsel-unknown-linux-musl
+          - mipsel-unknown-linux-gnu
 
     steps:
       - uses: actions/checkout@v5
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: nightly
+          toolchain: stable
           override: true
           components: rust-src
       - name: Install cross
@@ -30,7 +30,7 @@ jobs:
         with:
           tool: cross
       - name: Build with cross
-        run: cross build --release --target ${{ matrix.target }} -Z build-std=std,panic_abort
+        run: cross build --release --target ${{ matrix.target }}
       - name: Rename artifacts and compress
         run: |
           cd target/${{ matrix.target }}/release
