@@ -12,7 +12,7 @@ jobs:
   build-mips-nightly:
     runs-on: ubuntu-latest
     env:
-      RUST_BACKTRACE: full
+      RUST_BACKTRACE: 0
     strategy:
       matrix:
         target:
@@ -29,9 +29,7 @@ jobs:
         with:
           use-cross: true
           command: build
-          args: --release --target ${{ matrix.target }} -Z build-std,panic_abort
-        env: 
-          RUSTFLAGS: "-C panic=abort"
+          args: --release --target ${{ matrix.target }} -Z build-std
       - name: Rename artifacts and compress
         run: |
           cd target/${{ matrix.target }}/release
