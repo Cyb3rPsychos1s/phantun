@@ -16,6 +16,7 @@ jobs:
     strategy:
       matrix:
         target:
+          - mips-unknown-linux-gnu
           - mipsel-unknown-linux-gnu
 
     steps:
@@ -32,6 +33,13 @@ jobs:
           cargo zigbuild --release \
             --target ${{ matrix.target }}.2.27 \
             -Z build-std=std
+      - name: Patch ELF interpreter and rpath for Entware env
+        run: |
+          cd target/mipsel-unknown-linux-gnu/release
+          patchelf --set-interpreter /opt/lib/ld.so.1 phantun_client
+          patchelf --set-rpath /opt/lib phantun_client
+          patchelf --set-interpreter /opt/lib/ld.so.1 phantun_server
+          patchelf --set-rpath /opt/lib phantun_server
       - name: Rename artifacts and compress
         run: |
           cd target/${{ matrix.target }}/release
