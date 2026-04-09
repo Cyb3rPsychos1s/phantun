@@ -1,3 +1,13 @@
-[target.mipsel-unknown-linux-musl]
-rustflags = ["-C", "target-feature=+crt-static",  "-C", "link-arg=-lgcc",          # 用静态 libgcc 而不是 libgcc_s
-  "-C", "link-arg=-static-libgcc" ]
+[target.mipsel-unknown-linux-gnu]
+rustflags = [
+    "-C", "link-arg=-Wl,-dynamic-linker,/opt/lib/ld.so.1",
+    "-C", "link-arg=-Wl,-rpath,/opt/lib",
+    "-C", "link-arg=-no-pie",   # ← 关键！强制输出 executable 而不是 shared object
+]
+
+[target.mips-unknown-linux-gnu]
+rustflags = [
+    "-C", "link-arg=-Wl,-dynamic-linker,/opt/lib/ld.so.1",
+    "-C", "link-arg=-Wl,-rpath,/opt/lib",
+    "-C", "link-arg=-no-pie",   # ← 关键！强制输出 executable 而不是 shared object
+]
