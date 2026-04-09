@@ -13,3 +13,9 @@ rustflags = [
     "-C", "link-arg=-Wl,-rpath,/opt/lib",
     "-C", "link-arg=-no-pie",   
 ]
+
+[target.mipsel-unknown-linux-musl]
+rustflags = [
+    "-C", "target-feature=+crt-static",
+    "-C", "link-arg=-no-pie",
+]

@@ -16,8 +16,7 @@ jobs:
     strategy:
       matrix:
         target:
-          - mips-unknown-linux-gnu
-          - mipsel-unknown-linux-gnu
+          - mips-unknown-linux-musl
 
     steps:
       - uses: actions/checkout@v5
