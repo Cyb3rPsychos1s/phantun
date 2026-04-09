@@ -13,9 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RUST_BACKTRACE: 0
-      RUSTFLAGS: >- #add interpreter and rpath for Entware env
-        -C link-arg=-Wl,-dynamic-linker,/opt/lib/ld.so.1
-        -C link-arg=-Wl,-rpath,/opt/lib
     strategy:
       matrix:
         target:
@@ -36,6 +33,13 @@ jobs:
           cargo zigbuild --release \
             --target ${{ matrix.target }}.2.27 \
             -Z build-std=std
+      - name: Patch ELF interpreter and rpath for Entware env
+        run: |
+          cd target/mipsel-unknown-linux-gnu/release
+          patchelf --set-interpreter /opt/lib/ld.so.1 client
+          patchelf --set-rpath /opt/lib client
+          patchelf --set-interpreter /opt/lib/ld.so.1 server
+          patchelf --set-rpath /opt/lib server
       - name: Rename artifacts and compress
         run: |
           cd target/${{ matrix.target }}/release
