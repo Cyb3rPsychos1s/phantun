@@ -33,13 +33,6 @@ jobs:
           cargo zigbuild --release \
             --target ${{ matrix.target }}.2.27 \
             -Z build-std=std
-      - name: Patch ELF interpreter and rpath for Entware env
-        run: |
-          cd target/${{matrix.target}}/release
-          patchelf --set-interpreter /opt/lib/ld.so.1 client
-          patchelf --set-rpath /opt/lib client
-          patchelf --set-interpreter /opt/lib/ld.so.1 server
-          patchelf --set-rpath /opt/lib server
       - name: Rename artifacts and compress
         run: |
           cd target/${{ matrix.target }}/release
