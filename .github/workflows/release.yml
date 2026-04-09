@@ -30,7 +30,7 @@ jobs:
       - name: Build with cargo-zigbuild
         run: |
           cargo zigbuild --release \
-            --target ${{ matrix.target }}-gnu.2.27 \
+            --target ${{ matrix.target }}.2.27 \
             -Z build-std=std
       - name: Rename artifacts and compress
         run: |
