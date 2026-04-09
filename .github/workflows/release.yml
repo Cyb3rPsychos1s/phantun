@@ -30,9 +30,8 @@ jobs:
       - name: Build with cargo-zigbuild
         run: |
           cargo zigbuild --release \
-            --target ${{ matrix.target }} \
+            --target ${{ matrix.target }}.1.1.82-musleabi \
             -Z build-std=std,panic_abort \
-            --zig-abi mipsel-linux.1.1.82-musleabi
       - name: Rename artifacts and compress
         run: |
           cd target/${{ matrix.target }}/release
