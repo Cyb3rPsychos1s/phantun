@@ -21,17 +21,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
-      - uses: actions-rs/toolchain@v1
+      - uses: dtolnay/rust-toolchain@nightly
         with:
-          toolchain: nightly
-          override: true
+          targets: ${{ matrix.target }}
           components: rust-src
-      - name: Install cross
-        uses: taiki-e/install-action@v2
-        with:
-          tool: cross
-      - name: Build with cross
-        run: cross build --release --target ${{ matrix.target }} -Z build-std=std
+      - name: Install cargo-zigbuild
+        run: pip install ziglang && cargo install cargo-zigbuild
+      - name: Build with cargo-zigbuild
+        run: |
+          cargo zigbuild --release \
+            --target ${{ matrix.target }}-gnu.2.27 \
+            -Z build-std=std
       - name: Rename artifacts and compress
         run: |
           cd target/${{ matrix.target }}/release
