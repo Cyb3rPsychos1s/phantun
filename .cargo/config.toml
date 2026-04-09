@@ -1,15 +1,15 @@
 [target.mipsel-unknown-linux-gnu]
 rustflags = [
+    "-C", "target-feature=+crt-static",
     "-C", "link-arg=-Wl,-dynamic-linker,/opt/lib/ld.so.1",
-    "-C", "link-arg=-Wl,--disable-new-dtags",  # ← 强制用 RPATH 而不是 RUNPATH
     "-C", "link-arg=-Wl,-rpath,/opt/lib",
     "-C", "link-arg=-no-pie",   # ← 关键！强制输出 executable 而不是 shared object
 ]
 
 [target.mips-unknown-linux-gnu]
 rustflags = [
+    "-C", "target-feature=+crt-static",
     "-C", "link-arg=-Wl,-dynamic-linker,/opt/lib/ld.so.1",
-    "-C", "link-arg=-Wl,--disable-new-dtags",  
     "-C", "link-arg=-Wl,-rpath,/opt/lib",
     "-C", "link-arg=-no-pie",   
 ]
