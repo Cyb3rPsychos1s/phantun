@@ -1,11 +1,20 @@
 #!/bin/bash
 
+# fix：open alias function forcely 
+shopt -s expand_aliases
+
 # alias ​​settings must be global, and must be defined before the function being called with the alias
 if [ "$USE_IPTABLES_NFT_BACKEND" = 1 ]; then
   alias iptables=iptables-nft
   alias iptables-save=iptables-nft-save
   alias ip6tables=ip6tables-nft
   alias ip6tables-save=ip6tables-nft-save
+else
+    # explicitly use iptables-legacy 
+    alias iptables=iptables-legacy
+    alias iptables-save=iptables-legacy-save
+    alias ip6tables=ip6tables-legacy
+    alias ip6tables-save=ip6tables-legacy-save
 fi
 
 info() {
@@ -104,55 +113,57 @@ apply_sysctl() {
 }
 
 apply_iptables() {
-  local interface=$(_get_default_iface)
-  local address=$(_get_addr_by_iface "${interface}")
-  local tun=$(_get_tun_from_args "$@")
-  local peer=$(_get_peer_from_args "$@")
-  local port=$(_get_port_from_args "$@")
-  local comment="phantun_${tun}_${port}"
+  # local interface=$(_get_default_iface)
+  # local address=$(_get_addr_by_iface "${interface}")
+  # local tun=$(_get_tun_from_args "$@")
+  # local peer=$(_get_peer_from_args "$@")
+  # local port=$(_get_port_from_args "$@")
+  # local comment="phantun_${tun}_${port}"
 
-  if _check_rule_by_comment "${comment}"; then
-    warn "iptables rules already exist, maybe needs to check."
-  else
-    _iptables -A FORWARD -i $tun -j ACCEPT -m comment --comment "${comment}" || error "iptables filter rule add failed."
-    _iptables -A FORWARD -o $tun -j ACCEPT -m comment --comment "${comment}" || error "iptables filter rule add failed."
-    if _is_server_mode "$1"; then
-      info "iptables DNAT rule added: [${comment}]: ${interface} -> ${tun}, ${address} -> ${peer}"
-      _iptables -t nat -A PREROUTING -p tcp -i $interface --dport $port -j DNAT --to-destination $peer \
-        -m comment --comment "${comment}" || error "iptables DNAT rule add failed."
-    else
-      info "iptables SNAT rule added: [${comment}]: ${tun} -> ${interface}, ${peer} -> ${address}"
-      _iptables -t nat -A POSTROUTING -s $peer -o $interface -j SNAT --to-source $address \
-        -m comment --comment "${comment}" || error "iptables SNAT rule add failed."
-    fi
-  fi
+  # if _check_rule_by_comment "${comment}"; then
+  #   warn "iptables rules already exist, maybe needs to check."
+  # else
+  #   _iptables -A FORWARD -i $tun -j ACCEPT -m comment --comment "${comment}" || error "iptables filter rule add failed."
+  #   _iptables -A FORWARD -o $tun -j ACCEPT -m comment --comment "${comment}" || error "iptables filter rule add failed."
+  #   if _is_server_mode "$1"; then
+  #     info "iptables DNAT rule added: [${comment}]: ${interface} -> ${tun}, ${address} -> ${peer}"
+  #     _iptables -t nat -A PREROUTING -p tcp -i $interface --dport $port -j DNAT --to-destination $peer \
+  #       -m comment --comment "${comment}" || error "iptables DNAT rule add failed."
+  #   else
+  #     info "iptables SNAT rule added: [${comment}]: ${tun} -> ${interface}, ${peer} -> ${address}"
+  #     _iptables -t nat -A POSTROUTING -s $peer -o $interface -j SNAT --to-source $address \
+  #       -m comment --comment "${comment}" || error "iptables SNAT rule add failed."
+  #   fi
+  # fi
+  :
 }
 
 apply_ip6tables() {
-  ! _is_ipv4_only "$@" || return
+  # ! _is_ipv4_only "$@" || return
 
-  local interface=$(_get_default6_iface)
-  local address=$(_get_addr6_by_iface "${interface}")
-  local tun=$(_get_tun_from_args "$@")
-  local peer=$(_get_peer6_from_args "$@")
-  local port=$(_get_port_from_args "$@")
-  local comment="phantun_${tun}_${port}"
+  # local interface=$(_get_default6_iface)
+  # local address=$(_get_addr6_by_iface "${interface}")
+  # local tun=$(_get_tun_from_args "$@")
+  # local peer=$(_get_peer6_from_args "$@")
+  # local port=$(_get_port_from_args "$@")
+  # local comment="phantun_${tun}_${port}"
 
-  if _check_rule6_by_comment "${comment}"; then
-    warn "ip6tables rules already exist, maybe needs to check."
-  else
-    _ip6tables -A FORWARD -i $tun -j ACCEPT -m comment --comment "${comment}" || error "ip6tables filter rule add failed."
-    _ip6tables -A FORWARD -o $tun -j ACCEPT -m comment --comment "${comment}" || error "ip6tables filter rule add failed."
-    if _is_server_mode "$1"; then
-      info "ip6tables DNAT rule added: [${comment}]: ${interface} -> ${tun}, ${address} -> ${peer}"
-      _ip6tables -t nat -A PREROUTING -p tcp -i $interface --dport $port -j DNAT --to-destination $peer \
-        -m comment --comment "${comment}" || error "ip6tables DNAT rule add failed."
-    else
-      info "ip6tables SNAT rule added: [${comment}]: ${tun} -> ${interface}, ${peer} -> ${address}"
-      _ip6tables -t nat -A POSTROUTING -s $peer -o $interface -j SNAT --to-source $address \
-        -m comment --comment "${comment}" || error "ip6tables SNAT rule add failed."
-    fi
-  fi
+  # if _check_rule6_by_comment "${comment}"; then
+  #   warn "ip6tables rules already exist, maybe needs to check."
+  # else
+  #   _ip6tables -A FORWARD -i $tun -j ACCEPT -m comment --comment "${comment}" || error "ip6tables filter rule add failed."
+  #   _ip6tables -A FORWARD -o $tun -j ACCEPT -m comment --comment "${comment}" || error "ip6tables filter rule add failed."
+  #   if _is_server_mode "$1"; then
+  #     info "ip6tables DNAT rule added: [${comment}]: ${interface} -> ${tun}, ${address} -> ${peer}"
+  #     _ip6tables -t nat -A PREROUTING -p tcp -i $interface --dport $port -j DNAT --to-destination $peer \
+  #       -m comment --comment "${comment}" || error "ip6tables DNAT rule add failed."
+  #   else
+  #     info "ip6tables SNAT rule added: [${comment}]: ${tun} -> ${interface}, ${peer} -> ${address}"
+  #     _ip6tables -t nat -A POSTROUTING -s $peer -o $interface -j SNAT --to-source $address \
+  #       -m comment --comment "${comment}" || error "ip6tables SNAT rule add failed."
+  #   fi
+  # fi
+  :
 }
 
 stop_process() {
